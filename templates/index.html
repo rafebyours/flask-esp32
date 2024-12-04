@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Monitor</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #temp-indicator { font-size: 2em; color: blue; }
+    </style>
+</head>
+<body>
+    <h1>ESP32 Temperature Monitor</h1>
+    <p>Current Temperature:</p>
+    <div id="temp-indicator">Loading...</div>
+
+    <script>
+        async function fetchTemperature() {
+            try {
+                const response = await fetch('/get_temp');
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('temp-indicator').innerText = data.temperature + "°C";
+                } else {
+                    document.getElementById('temp-indicator').innerText = "Error fetching data";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('temp-indicator').innerText = "Error fetching data";
+            }
+        }
+
+        // Memperbarui suhu setiap 10 detik
+        setInterval(fetchTemperature, 10000);
+        fetchTemperature(); // Panggilan pertama langsung
+    </script>
+</body>
+</html>
