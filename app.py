@@ -1,18 +1,26 @@
 import random  # For generating random sensor values
 import time
-from datetime import datetime
-from flask import Flask, jsonify, request  # Tambahkan request di sini
-from flask_cors import CORS  # Import CORS
+from flask import Flask, jsonify, request, render_template  # Tambahkan render_template
+from flask_cors import CORS
 from pymongo import MongoClient
-import traceback  # Tambahkan traceback di sini
+from datetime import datetime
+import traceback
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://rafebyours:SurajaKids@cluster0.5e2ml.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client['sensor_db']  # Use your database
 collection = db['sensor_data']  # Use your collection
+
+@app.route('/frontend/static/<path:filename>')
+def serve_frontend_static(filename):
+    return send_from_directory(os.path.join(app.root_path, 'frontend/static'), filename)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # Endpoint to get data
 @app.route('/data', methods=['GET'])
